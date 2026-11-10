@@ -61,6 +61,7 @@ class ApiService {
         maxFreshDays: 3,
         imageUrl: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617',
       ),
+      
       ProductModel(
         id: 'P004',
         name: 'Daging Kambing Muda',
