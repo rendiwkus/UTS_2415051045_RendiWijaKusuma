@@ -163,9 +163,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Kategori Pangan Pilihan',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  const Expanded(
+                    child: Text(
+                      'Kategori Pangan Pilihan',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {

@@ -14,6 +14,8 @@ class CatalogScreen extends StatefulWidget {
 
 class _CatalogScreenState extends State<CatalogScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  // Kategori valid berdasarkan PRD: Daging Unggas, Daging Merah, Telur, Sembako (Sayuran ditiadakan)
   final List<String> _categories = [
     'All',
     'Daging Unggas',
@@ -21,6 +23,13 @@ class _CatalogScreenState extends State<CatalogScreen> {
     'Telur',
     'Sembako',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = context.read<OrderProvider>();
+    _searchController.text = provider.searchQuery;
+  }
 
   @override
   void dispose() {
@@ -41,7 +50,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Katalog Pangan Segar'),
+        title: const Text(
+          'Katalog Pangan Segar',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: Consumer<OrderProvider>(
         builder: (context, provider, child) {
@@ -49,11 +61,11 @@ class _CatalogScreenState extends State<CatalogScreen> {
             children: [
               // Search Bar
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Cari daging, telur, atau beras...',
+                    hintText: 'Cari daging, telur, atau sembako...',
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: provider.searchQuery.isNotEmpty
                         ? IconButton(
@@ -76,7 +88,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 ),
               ),
 
-              // Filter Chips
+              // Filter Chips Kategori
               SizedBox(
                 height: 48,
                 child: ListView.separated(
@@ -107,9 +119,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
               const Divider(height: 16),
 
-              // Product List / Grid using LayoutBuilder
+              // Responsive Content Area menggunakan LayoutBuilder
               Expanded(
-                child: _buildProductContent(context, provider),
+                child: _buildResponsiveContent(context, provider),
               ),
             ],
           );
@@ -118,7 +130,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 
-  Widget _buildProductContent(BuildContext context, OrderProvider provider) {
+  Widget _buildResponsiveContent(BuildContext context, OrderProvider provider) {
     if (provider.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -130,7 +142,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const Icon(Icons.error_outline, size: 52, color: Colors.red),
               const SizedBox(height: 12),
               Text(
                 provider.errorMessage!,
@@ -139,6 +151,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade700,
+                  foregroundColor: Colors.white,
+                ),
                 onPressed: () => provider.loadCatalog(),
                 icon: const Icon(Icons.refresh),
                 label: const Text('Coba Lagi'),
@@ -156,7 +172,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inventory_2_outlined, size: 54, color: Colors.grey.shade400),
+            Icon(Icons.inventory_2_outlined, size: 60, color: Colors.grey.shade400),
             const SizedBox(height: 12),
             Text(
               'Tidak ada produk pangan ditemukan.',
@@ -167,12 +183,15 @@ class _CatalogScreenState extends State<CatalogScreen> {
       );
     }
 
+    // Penerapan LayoutBuilder sesuai PRD Section 2.3:
+    // - Compact View (< 600dp): Single Column ListView
+    // - Wide View (>= 600dp): Multi-Column GridView (3-4 kolom)
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Responsivitas Layout:
-        // Compact View (< 600dp): Single Column ListView
-        // Wide View (>= 600dp): Multi-Column GridView (3-4 kolom)
-        if (constraints.maxWidth < 600) {
+        final isCompact = constraints.maxWidth < 600;
+
+        if (isCompact) {
+          // Compact Mobile View: Single Column ListView
           return ListView.builder(
             padding: const EdgeInsets.only(bottom: 16),
             itemCount: products.length,
@@ -180,25 +199,28 @@ class _CatalogScreenState extends State<CatalogScreen> {
               final product = products[index];
               return ProductCard(
                 product: product,
+                isGrid: false,
                 onTap: () => _navigateToDetail(context, product),
               );
             },
           );
         } else {
+          // Wide View (Tablet / Desktop / Landscape): Multi-Column GridView
           final crossAxisCount = constraints.maxWidth >= 900 ? 4 : 3;
           return GridView.builder(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: crossAxisCount,
-              childAspectRatio: 1.1,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+              childAspectRatio: 0.72,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
             ),
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
               return ProductCard(
                 product: product,
+                isGrid: true,
                 onTap: () => _navigateToDetail(context, product),
               );
             },
@@ -208,4 +230,3 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 }
-

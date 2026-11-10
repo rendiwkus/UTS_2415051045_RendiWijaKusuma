@@ -4,8 +4,18 @@ import 'providers/order_provider.dart';
 import 'repositories/product_repository.dart';
 import 'screens/home_screen.dart';
 import 'services/api_service.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+  Future<void> main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    // Inisialisasi Supabase
+    await Supabase.initialize(
+      url: 'https://cxugbrctumwpqqndmydq.supabase.co',
+      anonKey: 'sb_publishable_VvWLiJxaDxcnUihjdJZiyw_b96zIymA',
+    );
+
   runApp(const MyApp());
 }
 
