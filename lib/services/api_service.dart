@@ -3,28 +3,49 @@ import 'package:http/http.dart' as http;
 import '../models/product_model.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://api.jsonbin.io/v3/b'; // Fallback or mock endpoint
+  final http.Client _client;
 
+  // Endpoint REST API untuk katalog produk
+  static const String apiUrl = 'https://api.mockfly.dev/mocks/96f502b8/refarm/products';
+
+  ApiService({http.Client? client}) : _client = client ?? http.Client();
+
+  /// Mengambil data katalog produk via REST API HTTP GET.
+  /// Mengonversi payload JSON menjadi `List<ProductModel>`.
   Future<List<ProductModel>> fetchProducts() async {
     try {
-      // In initial setup/fase 1, if endpoint is unavailable or fails, fallback to structured mock data
-      final response = await http.get(
-        Uri.parse('$baseUrl/mock-products'),
-      ).timeout(const Duration(seconds: 5));
+      final response = await _client.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ).timeout(const Duration(seconds: 6));
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final List<dynamic> list = data is List ? data : (data['products'] ?? []);
-        return list.map((item) => ProductModel.fromJson(item)).toList();
+        final decoded = json.decode(response.body);
+        final List<dynamic> list = decoded is List ? decoded : (decoded['products'] ?? []);
+        final products = list
+            .map((item) => ProductModel.fromJson(item as Map<String, dynamic>))
+            // Menegakkan aturan domain PRD 2.1: Kategori 'Sayuran' wajib ditiadakan
+            .where((p) => p.category.toLowerCase() != 'sayuran')
+            .toList();
+
+        if (products.isNotEmpty) {
+          return products;
+        }
+        return getMockProducts();
       } else {
+        // Fallback jika response non-200
         return getMockProducts();
       }
     } catch (_) {
-      // Return initial mock catalog ensuring 4 valid categories without 'Sayuran'
+      // Fallback aman jika offline atau timeout
       return getMockProducts();
     }
   }
 
+  /// Data katalog default terstruktur sesuai spesifikasi PRD Fase 1
   List<ProductModel> getMockProducts() {
     final now = DateTime.now();
     return [
@@ -61,7 +82,6 @@ class ApiService {
         maxFreshDays: 3,
         imageUrl: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617',
       ),
-      
       ProductModel(
         id: 'P004',
         name: 'Daging Kambing Muda',
@@ -120,4 +140,3 @@ class ApiService {
     ];
   }
 }
-
