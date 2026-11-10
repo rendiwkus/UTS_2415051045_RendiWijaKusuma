@@ -9,6 +9,7 @@ class ProductModel {
   final int maxFreshDays;
   final String imageUrl;
 
+
   ProductModel({
     required this.id,
     required this.name,
