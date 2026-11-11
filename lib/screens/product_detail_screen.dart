@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../widgets/freshness_indicator.dart';
+import 'checkout_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
@@ -191,15 +192,10 @@ class ProductDetailScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    product.isPreOrder
-                        ? 'Pre-order untuk "${product.name}" dicatat! (Fitur Checkout lengkap pada Fase 2)'
-                        : 'Pesanan untuk "${product.name}" dicatat! (Fitur Checkout lengkap pada Fase 2)',
-                  ),
-                  duration: const Duration(seconds: 3),
-                  backgroundColor: Colors.green.shade800,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CheckoutScreen(product: product),
                 ),
               );
             },

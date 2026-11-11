@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:uts_2415051045_rendiwijakusuma/main.dart';
 import 'package:uts_2415051045_rendiwijakusuma/models/product_model.dart';
+import 'package:uts_2415051045_rendiwijakusuma/providers/order_provider.dart';
 import 'package:uts_2415051045_rendiwijakusuma/screens/catalog_screen.dart';
+import 'package:uts_2415051045_rendiwijakusuma/screens/checkout_screen.dart';
 import 'package:uts_2415051045_rendiwijakusuma/screens/product_detail_screen.dart';
 import 'package:uts_2415051045_rendiwijakusuma/widgets/freshness_indicator.dart';
 
@@ -52,7 +55,7 @@ void main() {
     expect(find.byType(GridView), findsOneWidget);
   });
 
-  testWidgets('ProductDetailScreen displays freshness gauge and action button', (tester) async {
+  testWidgets('ProductDetailScreen displays freshness gauge and navigates to CheckoutScreen', (tester) async {
     final sampleProduct = ProductModel(
       id: 'TEST01',
       name: 'Daging Ayam Uji',
@@ -66,8 +69,11 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: ProductDetailScreen(product: sampleProduct),
+      ChangeNotifierProvider<OrderProvider>.value(
+        value: OrderProvider(),
+        child: MaterialApp(
+          home: ProductDetailScreen(product: sampleProduct),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -77,9 +83,9 @@ void main() {
     expect(find.text('Pre-Order Sekarang'), findsOneWidget);
     expect(find.byType(FreshnessIndicator), findsOneWidget);
 
-    // Tap action button and verify SnackBar
+    // Tap action button and verify navigation to CheckoutScreen
     await tester.tap(find.text('Pre-Order Sekarang'));
-    await tester.pump();
-    expect(find.byType(SnackBar), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.byType(CheckoutScreen), findsOneWidget);
   });
 }
