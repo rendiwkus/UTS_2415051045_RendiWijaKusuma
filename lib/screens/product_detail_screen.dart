@@ -3,6 +3,7 @@ import '../models/product_model.dart';
 import '../widgets/freshness_indicator.dart';
 import 'checkout_screen.dart';
 
+
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
 
