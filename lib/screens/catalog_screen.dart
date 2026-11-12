@@ -137,10 +137,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
     if (provider.errorMessage != null) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.error_outline, size: 52, color: Colors.red),
               const SizedBox(height: 12),
@@ -169,29 +169,33 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
     if (products.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.inventory_2_outlined,
-              size: 60,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Tidak ada produk pangan ditemukan.',
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () {
-                _searchController.clear();
-                provider.setSearchQuery('');
-                provider.setCategory('All');
-              },
-              child: const Text('Reset Filter'),
-            ),
-          ],
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.inventory_2_outlined,
+                size: 60,
+                color: Colors.grey.shade400,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Tidak ada produk pangan ditemukan.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
+              ),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () {
+                  _searchController.clear();
+                  provider.setSearchQuery('');
+                  provider.setCategory('All');
+                },
+                child: const Text('Reset Filter'),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -220,11 +224,14 @@ class _CatalogScreenState extends State<CatalogScreen> {
         } else {
           // Wide View (Tablet / Desktop / Landscape): Multi-Column GridView
           final crossAxisCount = constraints.maxWidth >= 900 ? 4 : 3;
+          final itemWidth =
+              (constraints.maxWidth - 32 - (crossAxisCount - 1) * 12) /
+              crossAxisCount;
           return GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: crossAxisCount,
-              childAspectRatio: 0.72,
+              childAspectRatio: itemWidth / 300,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),

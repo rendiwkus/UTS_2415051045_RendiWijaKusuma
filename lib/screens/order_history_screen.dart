@@ -117,7 +117,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      provider.errorMessage ?? 'Gagal membatalkan pesanan.',
+                      provider.orderErrorMessage ??
+                          'Gagal membatalkan pesanan.',
                     ),
                   ),
                 ],
@@ -173,7 +174,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           }
 
           // 2. Error State jika fetch gagal dan tidak ada data cache lokal
-          if (provider.errorMessage != null && provider.ordersList.isEmpty) {
+          if (provider.orderErrorMessage != null &&
+              provider.ordersList.isEmpty) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -195,7 +197,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      provider.errorMessage!,
+                      provider.orderErrorMessage!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 13,
@@ -369,7 +371,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                               const SizedBox(height: 6),
 
                               // Kategori & Tipe
-                              Row(
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 6,
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.symmetric(
@@ -389,7 +393,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
                                   Text(
                                     order.orderType == 'pre_order'
                                         ? 'Pre-Order (${order.quantity} unit)'
@@ -414,11 +417,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                     color: Colors.grey.shade600,
                                   ),
                                   const SizedBox(width: 6),
-                                  Text(
-                                    'Kirim: ${order.deliveryDate.day.toString().padLeft(2, '0')}/${order.deliveryDate.month.toString().padLeft(2, '0')}/${order.deliveryDate.year}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
+                                  Expanded(
+                                    child: Text(
+                                      'Kirim: ${formatDeliveryDate(order.deliveryDate)}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -481,9 +486,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                               const Divider(height: 16),
 
                               // Total Harga & Aksi Edit / Hapus
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              Wrap(
+                                alignment: WrapAlignment.spaceBetween,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 8,
+                                runSpacing: 8,
                                 children: [
                                   Column(
                                     crossAxisAlignment:

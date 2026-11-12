@@ -140,7 +140,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  provider.errorMessage ?? 'Gagal memperbarui pesanan.',
+                  provider.orderErrorMessage ?? 'Gagal memperbarui pesanan.',
                 ),
               ),
             ],
@@ -310,7 +310,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              '${_deliveryDate.day.toString().padLeft(2, '0')}/${_deliveryDate.month.toString().padLeft(2, '0')}/${_deliveryDate.year}',
+                              formatDeliveryDate(_deliveryDate),
                               style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,

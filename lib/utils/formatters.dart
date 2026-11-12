@@ -7,3 +7,6 @@ final NumberFormat _rupiahFormatter = NumberFormat.currency(
 );
 
 String formatRupiah(num amount) => _rupiahFormatter.format(amount);
+
+String formatDeliveryDate(DateTime date) =>
+    DateFormat('dd MMM yyyy').format(date);

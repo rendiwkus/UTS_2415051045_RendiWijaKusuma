@@ -30,6 +30,7 @@ class OrderProvider extends ChangeNotifier {
   List<OrderModel> _ordersList = [];
   bool _isLoadingOrders = false;
   bool _isSubmittingOrder = false;
+  String? _orderErrorMessage;
 
   // Getters Katalog
   List<ProductModel> get products => _products;
@@ -42,6 +43,7 @@ class OrderProvider extends ChangeNotifier {
   List<OrderModel> get ordersList => _ordersList;
   bool get isLoadingOrders => _isLoadingOrders;
   bool get isSubmittingOrder => _isSubmittingOrder;
+  String? get orderErrorMessage => _orderErrorMessage;
 
   /// Daftar produk yang sudah disaring berdasarkan kategori aktif dan kata kunci pencarian
   List<ProductModel> get filteredProducts {
@@ -96,7 +98,7 @@ class OrderProvider extends ChangeNotifier {
   /// Mengambil daftar pesanan dari tabel Supabase
   Future<void> fetchOrdersFromDatabase() async {
     _isLoadingOrders = true;
-    _errorMessage = null;
+    _orderErrorMessage = null;
     notifyListeners();
 
     try {
@@ -105,7 +107,7 @@ class OrderProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _isLoadingOrders = false;
-      _errorMessage = 'Gagal memuat riwayat pesanan: $e';
+      _orderErrorMessage = 'Gagal memuat riwayat pesanan: $e';
       notifyListeners();
     }
   }
@@ -113,7 +115,7 @@ class OrderProvider extends ChangeNotifier {
   /// Membuat pesanan baru ke Supabase
   Future<bool> submitNewOrder(OrderModel order) async {
     _isSubmittingOrder = true;
-    _errorMessage = null;
+    _orderErrorMessage = null;
     notifyListeners();
 
     try {
@@ -127,7 +129,7 @@ class OrderProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _isSubmittingOrder = false;
-      _errorMessage = 'Gagal menyimpan pesanan: $e';
+      _orderErrorMessage = 'Gagal menyimpan pesanan: $e';
       notifyListeners();
       return false;
     }
@@ -141,7 +143,7 @@ class OrderProvider extends ChangeNotifier {
     String? newNotes,
   ) async {
     _isLoadingOrders = true;
-    _errorMessage = null;
+    _orderErrorMessage = null;
     notifyListeners();
 
     try {
@@ -167,7 +169,7 @@ class OrderProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _isLoadingOrders = false;
-      _errorMessage = 'Gagal memperbarui pesanan: $e';
+      _orderErrorMessage = 'Gagal memperbarui pesanan: $e';
       notifyListeners();
       return false;
     }
@@ -176,7 +178,7 @@ class OrderProvider extends ChangeNotifier {
   /// Membatalkan / menghapus pesanan berdasarkan ID
   Future<bool> cancelOrder(String id) async {
     _isLoadingOrders = true;
-    _errorMessage = null;
+    _orderErrorMessage = null;
     notifyListeners();
 
     try {
@@ -187,7 +189,7 @@ class OrderProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _isLoadingOrders = false;
-      _errorMessage = 'Gagal membatalkan pesanan: $e';
+      _orderErrorMessage = 'Gagal membatalkan pesanan: $e';
       notifyListeners();
       return false;
     }
