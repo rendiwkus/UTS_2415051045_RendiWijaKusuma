@@ -100,9 +100,19 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Pesanan "${widget.order.productName}" berhasil diperbarui!',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle_rounded, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Pesanan "${widget.order.productName}" berhasil diperbarui!',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
           backgroundColor: Colors.green.shade800,
           duration: const Duration(seconds: 3),
@@ -114,9 +124,21 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(provider.errorMessage ?? 'Gagal memperbarui pesanan.'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline_rounded, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  provider.errorMessage ?? 'Gagal memperbarui pesanan.',
+                ),
+              ),
+            ],
+          ),
           backgroundColor: Colors.red.shade700,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 4),
         ),
       );
     }

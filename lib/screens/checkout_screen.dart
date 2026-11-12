@@ -106,9 +106,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Pesanan "${widget.product.name}" berhasil dibuat!',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle_rounded, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Pesanan "${widget.product.name}" berhasil dibuat!',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
           backgroundColor: Colors.green.shade800,
           duration: const Duration(seconds: 3),
@@ -120,11 +130,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            provider.errorMessage ?? 'Gagal membuat pesanan.',
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline_rounded, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  provider.errorMessage ?? 'Gagal membuat pesanan.',
+                ),
+              ),
+            ],
           ),
           backgroundColor: Colors.red.shade700,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 4),
         ),
       );
     }
