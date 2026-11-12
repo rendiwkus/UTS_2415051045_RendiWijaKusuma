@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/order_provider.dart';
 import 'catalog_screen.dart';
+import 'order_history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,6 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.receipt_long_rounded),
+            tooltip: 'Riwayat Pesanan Supabase',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const OrderHistoryScreen()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.storefront_rounded),
             tooltip: 'Buka Katalog',
