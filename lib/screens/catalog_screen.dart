@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../models/product_model.dart';
 import '../providers/order_provider.dart';
 import '../widgets/product_card.dart';
@@ -40,9 +41,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
   void _navigateToDetail(BuildContext context, ProductModel product) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ProductDetailScreen(product: product),
-      ),
+      MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
     );
   }
 
@@ -95,17 +94,20 @@ class _CatalogScreenState extends State<CatalogScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   scrollDirection: Axis.horizontal,
                   itemCount: _categories.length,
-                  separatorBuilder: (context, index) => const SizedBox(width: 8),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final cat = _categories[index];
                     final isSelected = provider.selectedCategory == cat;
-                    return ChoiceChip(
+                    return FilterChip(
                       label: Text(cat),
                       selected: isSelected,
                       selectedColor: Colors.green.shade600,
                       labelStyle: TextStyle(
                         color: isSelected ? Colors.white : Colors.black87,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                       onSelected: (selected) {
                         if (selected) {
@@ -120,9 +122,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
               const Divider(height: 16),
 
               // Responsive Content Area menggunakan LayoutBuilder
-              Expanded(
-                child: _buildResponsiveContent(context, provider),
-              ),
+              Expanded(child: _buildResponsiveContent(context, provider)),
             ],
           );
         },
@@ -172,11 +172,24 @@ class _CatalogScreenState extends State<CatalogScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inventory_2_outlined, size: 60, color: Colors.grey.shade400),
+            Icon(
+              Icons.inventory_2_outlined,
+              size: 60,
+              color: Colors.grey.shade400,
+            ),
             const SizedBox(height: 12),
             Text(
               'Tidak ada produk pangan ditemukan.',
               style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () {
+                _searchController.clear();
+                provider.setSearchQuery('');
+                provider.setCategory('All');
+              },
+              child: const Text('Reset Filter'),
             ),
           ],
         ),

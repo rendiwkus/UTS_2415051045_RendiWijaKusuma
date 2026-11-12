@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../models/order_model.dart';
 import '../providers/order_provider.dart';
+import '../utils/formatters.dart';
 import 'catalog_screen.dart';
 import 'edit_order_screen.dart';
 
@@ -40,7 +42,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     }
   }
 
-  Future<void> _confirmCancelOrder(BuildContext context, OrderModel order) async {
+  Future<void> _confirmCancelOrder(
+    BuildContext context,
+    OrderModel order,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
@@ -74,7 +79,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     if (confirmed == true && context.mounted && order.id != null) {
       final provider = context.read<OrderProvider>();
       final success = await provider.cancelOrder(order.id!);
-
 
       if (context.mounted) {
         if (success) {
@@ -176,7 +180,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.cloud_off_rounded, size: 58, color: Colors.red),
+                    const Icon(
+                      Icons.cloud_off_rounded,
+                      size: 58,
+                      color: Colors.red,
+                    ),
                     const SizedBox(height: 14),
                     const Text(
                       'Gagal Memuat Riwayat',
@@ -189,7 +197,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     Text(
                       provider.errorMessage!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade700,
+                      ),
                     ),
                     const SizedBox(height: 18),
                     ElevatedButton.icon(
@@ -246,7 +257,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       Text(
                         'Pesanan yang Anda buat melalui proses checkout atau pre-order akan otomatis tersimpan di database Supabase dan muncul di sini.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton.icon(
@@ -288,7 +302,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   const LinearProgressIndicator(minHeight: 3),
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     itemCount: provider.ordersList.length,
                     itemBuilder: (context, index) {
                       final order = provider.ordersList[index];
@@ -307,7 +324,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                             children: [
                               // Baris Header: Produk & Status Chip
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
@@ -326,10 +344,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                       vertical: 3,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: statusColor.withValues(alpha: 0.15),
+                                      color: statusColor.withValues(
+                                        alpha: 0.15,
+                                      ),
                                       borderRadius: BorderRadius.circular(6),
                                       border: Border.all(
-                                        color: statusColor.withValues(alpha: 0.5),
+                                        color: statusColor.withValues(
+                                          alpha: 0.5,
+                                        ),
                                       ),
                                     ),
                                     child: Text(
@@ -428,7 +450,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                 ],
                               ),
 
-                              if (order.notes != null && order.notes!.isNotEmpty) ...[
+                              if (order.notes != null &&
+                                  order.notes!.isNotEmpty) ...[
                                 const SizedBox(height: 4),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -459,10 +482,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
 
                               // Total Harga & Aksi Edit / Hapus
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Total Biaya:',
@@ -472,7 +497,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                         ),
                                       ),
                                       Text(
-                                        'Rp ${order.totalPrice.toStringAsFixed(0)}',
+                                        formatRupiah(order.totalPrice),
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
@@ -487,7 +512,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                       OutlinedButton.icon(
                                         style: OutlinedButton.styleFrom(
                                           foregroundColor: Colors.blue.shade700,
-                                          side: BorderSide(color: Colors.blue.shade300),
+                                          side: BorderSide(
+                                            color: Colors.blue.shade300,
+                                          ),
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 10,
                                             vertical: 6,
@@ -498,11 +525,15 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (_) => EditOrderScreen(order: order),
+                                              builder: (_) =>
+                                                  EditOrderScreen(order: order),
                                             ),
                                           );
                                         },
-                                        icon: const Icon(Icons.edit_outlined, size: 16),
+                                        icon: const Icon(
+                                          Icons.edit_outlined,
+                                          size: 16,
+                                        ),
                                         label: const Text('Ubah'),
                                       ),
                                       const SizedBox(width: 8),
@@ -511,15 +542,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                       OutlinedButton.icon(
                                         style: OutlinedButton.styleFrom(
                                           foregroundColor: Colors.red.shade700,
-                                          side: BorderSide(color: Colors.red.shade300),
+                                          side: BorderSide(
+                                            color: Colors.red.shade300,
+                                          ),
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 10,
                                             vertical: 6,
                                           ),
                                           visualDensity: VisualDensity.compact,
                                         ),
-                                        onPressed: () => _confirmCancelOrder(context, order),
-                                        icon: const Icon(Icons.delete_outline, size: 16),
+                                        onPressed: () =>
+                                            _confirmCancelOrder(context, order),
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                          size: 16,
+                                        ),
                                         label: const Text('Batal'),
                                       ),
                                     ],

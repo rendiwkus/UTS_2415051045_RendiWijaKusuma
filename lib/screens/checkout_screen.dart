@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../models/order_model.dart';
 import '../models/product_model.dart';
 import '../providers/order_provider.dart';
+import '../utils/formatters.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final ProductModel product;
@@ -107,7 +109,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           content: Row(
             children: [
               const Icon(Icons.check_circle_rounded, color: Colors.white),
@@ -131,15 +135,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           content: Row(
             children: [
               const Icon(Icons.error_outline_rounded, color: Colors.white),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  provider.errorMessage ?? 'Gagal membuat pesanan.',
-                ),
+                child: Text(provider.errorMessage ?? 'Gagal membuat pesanan.'),
               ),
             ],
           ),
@@ -158,7 +162,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.product.isPreOrder ? 'Form Pre-Order' : 'Form Checkout Pesanan',
+          widget.product.isPreOrder
+              ? 'Form Pre-Order'
+              : 'Form Checkout Pesanan',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -188,16 +194,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           width: 70,
                           height: 70,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            width: 70,
-                            height: 70,
-                            color: Colors.green.shade100,
-                            child: const Icon(
-                              Icons.inventory_2_outlined,
-                              color: Colors.green,
-                              size: 32,
-                            ),
-                          ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                width: 70,
+                                height: 70,
+                                color: Colors.green.shade100,
+                                child: const Icon(
+                                  Icons.inventory_2_outlined,
+                                  color: Colors.green,
+                                  size: 32,
+                                ),
+                              ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -216,7 +223,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '${widget.product.category} • Rp ${widget.product.price.toStringAsFixed(0)}/unit',
+                              '${widget.product.category} • ${formatRupiah(widget.product.price)}/unit',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.green.shade900,
@@ -476,13 +483,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 children: [
                   const Text(
                     'Total Pembayaran:',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    'Rp ${totalPrice.toStringAsFixed(0)}',
+                    formatRupiah(totalPrice),
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,

@@ -64,51 +64,60 @@ void main() {
   Widget buildTestableWidget(Widget child) {
     return ChangeNotifierProvider<OrderProvider>.value(
       value: provider,
-      child: MaterialApp(
-        home: child,
-      ),
+      child: MaterialApp(home: child),
     );
   }
 
   group('Order CRUD Screens (Edit & History) Tests', () {
-    testWidgets('OrderHistoryScreen displays order details and chip', (tester) async {
+    testWidgets('OrderHistoryScreen displays order details and chip', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildTestableWidget(const OrderHistoryScreen()));
       await tester.pumpAndSettle();
 
       expect(find.text('Daging Ayam Broiler Segar'), findsOneWidget);
       expect(find.text('Pending'), findsOneWidget);
-      expect(find.text('Rp 72000'), findsOneWidget);
+      expect(find.text('Rp 72.000'), findsOneWidget);
       expect(find.textContaining('Jl. Ahmad Yani'), findsOneWidget);
     });
 
-    testWidgets('Canceling order triggers confirmation AlertDialog before deletion', (tester) async {
-      await tester.pumpWidget(buildTestableWidget(const OrderHistoryScreen()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'Canceling order triggers confirmation AlertDialog before deletion',
+      (tester) async {
+        await tester.pumpWidget(
+          buildTestableWidget(const OrderHistoryScreen()),
+        );
+        await tester.pumpAndSettle();
 
-      // Tap Batal button on card
-      await tester.tap(find.text('Batal'));
-      await tester.pumpAndSettle();
+        // Tap Batal button on card
+        await tester.tap(find.text('Batal'));
+        await tester.pumpAndSettle();
 
-      // Verify AlertDialog appears
-      expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.text('Batalkan Pesanan?'), findsOneWidget);
+        // Verify AlertDialog appears
+        expect(find.byType(AlertDialog), findsOneWidget);
+        expect(find.text('Batalkan Pesanan?'), findsOneWidget);
 
-      // Confirm cancellation
-      await tester.tap(find.text('Ya, Batalkan'));
-      await tester.pump();
-      await tester.pumpAndSettle();
+        // Confirm cancellation
+        await tester.tap(find.text('Ya, Batalkan'));
+        await tester.pump();
+        await tester.pumpAndSettle();
 
-      // Verify SnackBar feedback
-      expect(find.byType(SnackBar), findsOneWidget);
-      expect(find.textContaining('berhasil dibatalkan'), findsOneWidget);
+        // Verify SnackBar feedback
+        expect(find.byType(SnackBar), findsOneWidget);
+        expect(find.textContaining('berhasil dibatalkan'), findsOneWidget);
 
-      // Verify empty state is now displayed
-      expect(find.text('Belum Ada Pesanan'), findsOneWidget);
-      expect(mockService.orders, isEmpty);
-    });
+        // Verify empty state is now displayed
+        expect(find.text('Belum Ada Pesanan'), findsOneWidget);
+        expect(mockService.orders, isEmpty);
+      },
+    );
 
-    testWidgets('EditOrderScreen pre-fills data and successfully updates', (tester) async {
-      await tester.pumpWidget(buildTestableWidget(EditOrderScreen(order: sampleOrder)));
+    testWidgets('EditOrderScreen pre-fills data and successfully updates', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildTestableWidget(EditOrderScreen(order: sampleOrder)),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Ubah Detail Pesanan'), findsOneWidget);
@@ -125,9 +134,11 @@ void main() {
       await tester.pump();
       await tester.pumpAndSettle();
 
-      expect(mockService.orders.first.deliveryAddress, 'Jl. Gajah Mada No. 88 Singaraja Baru');
+      expect(
+        mockService.orders.first.deliveryAddress,
+        'Jl. Gajah Mada No. 88 Singaraja Baru',
+      );
       expect(find.textContaining('berhasil diperbarui'), findsOneWidget);
     });
   });
 }
-

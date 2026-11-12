@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../models/product_model.dart';
+import '../utils/formatters.dart';
 import '../widgets/freshness_indicator.dart';
 import 'checkout_screen.dart';
-
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
@@ -12,9 +13,7 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.name),
-      ),
+      appBar: AppBar(title: Text(product.name)),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +45,10 @@ class ProductDetailScreen extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.green.shade100,
                           borderRadius: BorderRadius.circular(6),
@@ -63,7 +65,10 @@ class ProductDetailScreen extends StatelessWidget {
                       const SizedBox(width: 8),
                       if (product.isPreOrder)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.orange.shade100,
                             borderRadius: BorderRadius.circular(6),
@@ -95,7 +100,7 @@ class ProductDetailScreen extends StatelessWidget {
 
                   // Price
                   Text(
-                    'Rp ${product.price.toStringAsFixed(0)}',
+                    formatRupiah(product.price),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
@@ -136,7 +141,10 @@ class ProductDetailScreen extends StatelessWidget {
                           const SizedBox(height: 8),
                           Text(
                             'Diproses pada: ${product.processedAt.day}/${product.processedAt.month}/${product.processedAt.year} (Maks. ${product.maxFreshDays} hari segar)',
-                            style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey.shade600,
+                            ),
                           ),
                         ],
                       ),
@@ -190,7 +198,9 @@ class ProductDetailScreen extends StatelessWidget {
               backgroundColor: Colors.green.shade700,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
             onPressed: () {
               Navigator.push(
@@ -210,4 +220,3 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 }
-

@@ -1,19 +1,23 @@
 import 'package:flutter/foundation.dart';
+
 import '../models/order_model.dart';
 import '../models/product_model.dart';
+import '../repositories/farm_repository.dart';
 import '../repositories/product_repository.dart';
 import '../services/supabase_service.dart';
 
 /// State Management untuk Katalog Pangan & Transaksi Supabase REFARM AgroStore
 class OrderProvider extends ChangeNotifier {
-  final ProductRepository _repository;
-  final SupabaseService _supabaseService;
+  final FarmRepository _farmRepository;
+  final ProductRepository? _legacyProductRepository;
 
   OrderProvider({
+    FarmRepository? farmRepository,
     ProductRepository? repository,
     SupabaseService? supabaseService,
-  })  : _repository = repository ?? ProductRepository(),
-        _supabaseService = supabaseService ?? SupabaseService();
+  }) : _farmRepository =
+           farmRepository ?? FarmRepository(supabaseService: supabaseService),
+       _legacyProductRepository = repository;
 
   // State Katalog Produk (Fase 1)
   List<ProductModel> _products = [];
@@ -42,11 +46,12 @@ class OrderProvider extends ChangeNotifier {
   /// Daftar produk yang sudah disaring berdasarkan kategori aktif dan kata kunci pencarian
   List<ProductModel> get filteredProducts {
     return _products.where((product) {
-      final matchesCategory = _selectedCategory == 'All' ||
+      final matchesCategory =
+          _selectedCategory == 'All' ||
           product.category.toLowerCase() == _selectedCategory.toLowerCase();
-      final matchesSearch = product.name
-          .toLowerCase()
-          .contains(_searchQuery.toLowerCase());
+      final matchesSearch = product.name.toLowerCase().contains(
+        _searchQuery.toLowerCase(),
+      );
       return matchesCategory && matchesSearch;
     }).toList();
   }
@@ -58,7 +63,9 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _products = await _repository.getProducts();
+      _products = _legacyProductRepository == null
+          ? await _farmRepository.getCatalogProducts()
+          : await _legacyProductRepository.getProducts();
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -93,7 +100,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _ordersList = await _supabaseService.fetchOrders();
+      _ordersList = await _farmRepository.getOrderHistory();
       _isLoadingOrders = false;
       notifyListeners();
     } catch (e) {
@@ -110,10 +117,10 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _supabaseService.createOrder(order);
+      await _farmRepository.submitOrder(order);
       // Sinkronisasi ulang data pesanan lokal
       try {
-        _ordersList = await _supabaseService.fetchOrders();
+        _ordersList = await _farmRepository.getOrderHistory();
       } catch (_) {}
       _isSubmittingOrder = false;
       notifyListeners();
@@ -140,7 +147,7 @@ class OrderProvider extends ChangeNotifier {
     try {
       final formattedDate =
           "${newDate.year.toString().padLeft(4, '0')}-${newDate.month.toString().padLeft(2, '0')}-${newDate.day.toString().padLeft(2, '0')}";
-      await _supabaseService.updateOrder(id, {
+      await _farmRepository.modifyOrder(id, {
         'delivery_address': newAddress,
         'delivery_date': formattedDate,
         'notes': newNotes,
@@ -173,7 +180,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _supabaseService.deleteOrder(id);
+      await _farmRepository.removeOrder(id);
       _ordersList.removeWhere((o) => o.id == id);
       _isLoadingOrders = false;
       notifyListeners();

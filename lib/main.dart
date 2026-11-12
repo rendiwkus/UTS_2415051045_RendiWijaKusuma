@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'providers/order_provider.dart';
-import 'repositories/product_repository.dart';
+import 'repositories/farm_repository.dart';
 import 'screens/home_screen.dart';
 import 'services/api_service.dart';
 
@@ -18,7 +19,6 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -28,9 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => OrderProvider(
-            repository: ProductRepository(
-              apiService: ApiService(),
-            ),
+            farmRepository: FarmRepository(apiService: ApiService()),
           ),
         ),
       ],

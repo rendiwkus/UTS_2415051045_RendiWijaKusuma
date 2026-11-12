@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../models/order_model.dart';
 import '../providers/order_provider.dart';
+import '../utils/formatters.dart';
 
 class EditOrderScreen extends StatefulWidget {
   final OrderModel order;
@@ -23,7 +25,9 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
   @override
   void initState() {
     super.initState();
-    _addressController = TextEditingController(text: widget.order.deliveryAddress);
+    _addressController = TextEditingController(
+      text: widget.order.deliveryAddress,
+    );
     _notesController = TextEditingController(text: widget.order.notes ?? '');
     _deliveryDate = widget.order.deliveryDate;
 
@@ -101,7 +105,9 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           content: Row(
             children: [
               const Icon(Icons.check_circle_rounded, color: Colors.white),
@@ -125,7 +131,9 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           content: Row(
             children: [
               const Icon(Icons.error_outline_rounded, color: Colors.white),
@@ -210,11 +218,14 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                       const SizedBox(height: 6),
                       Text(
                         'Pemesan: ${widget.order.customerName} (${widget.order.customerPhone ?? "-"})',
-                        style: TextStyle(fontSize: 13, color: Colors.grey.shade800),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey.shade800,
+                        ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Jumlah: ${widget.order.quantity} unit • Total: Rp ${widget.order.totalPrice.toStringAsFixed(0)}',
+                        'Jumlah: ${widget.order.quantity} unit • Total: ${formatRupiah(widget.order.totalPrice)}',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -380,4 +391,3 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
     );
   }
 }
-

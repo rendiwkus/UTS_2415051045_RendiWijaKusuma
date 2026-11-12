@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../models/product_model.dart';
 import 'freshness_indicator.dart';
+import '../utils/formatters.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
@@ -64,7 +66,10 @@ class ProductCard extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.green.shade50,
                               borderRadius: BorderRadius.circular(4),
@@ -84,7 +89,10 @@ class ProductCard extends StatelessWidget {
                         if (product.isPreOrder) ...[
                           const SizedBox(width: 4),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.orange.shade100,
                               borderRadius: BorderRadius.circular(4),
@@ -113,7 +121,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Rp ${product.price.toStringAsFixed(0)}',
+                      formatRupiah(product.price),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -166,7 +174,10 @@ class ProductCard extends StatelessWidget {
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.orange.shade700,
                         borderRadius: BorderRadius.circular(6),
@@ -190,7 +201,10 @@ class ProductCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.green.shade50,
                         borderRadius: BorderRadius.circular(4),
@@ -216,7 +230,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Rp ${product.price.toStringAsFixed(0)}',
+                      formatRupiah(product.price),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
