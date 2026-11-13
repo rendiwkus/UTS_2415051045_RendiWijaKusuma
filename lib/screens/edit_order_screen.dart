@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/order_model.dart';
 import '../providers/order_provider.dart';
 import '../utils/formatters.dart';
+import '../widgets/animated_press.dart';
 
 class EditOrderScreen extends StatefulWidget {
   final OrderModel order;
@@ -161,230 +162,240 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Info Ringkas Pesanan
-              Card(
-                elevation: 1,
-                color: Colors.blueGrey.shade50,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.blueGrey.shade200),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 720),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Info Ringkas Pesanan
+                  Card(
+                    elevation: 1,
+                    color: Colors.blueGrey.shade50,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: Colors.blueGrey.shade200),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Text(
-                              widget.order.productName,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  widget.order.productName,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.orange.shade100,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  widget.order.status,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange.shade900,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Pemesan: ${widget.order.customerName} (${widget.order.customerPhone ?? "-"})',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey.shade800,
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.orange.shade100,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              widget.order.status,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange.shade900,
-                              ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Jumlah: ${widget.order.quantity} unit • Total: ${formatRupiah(widget.order.totalPrice)}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green.shade800,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Pemesan: ${widget.order.customerName} (${widget.order.customerPhone ?? "-"})',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade800,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  const Text(
+                    'Perbarui Informasi Pengantaran',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Alamat Pengiriman
+                  TextFormField(
+                    controller: _addressController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Alamat Lengkap Pengiriman *',
+                      hintText: 'Nama jalan, nomor rumah, RT/RW, kecamatan...',
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.only(bottom: 40),
+                        child: Icon(Icons.location_on_outlined),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade50,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return 'Alamat pengiriman wajib diisi.';
+                      }
+                      if (val.trim().length < 10) {
+                        return 'Alamat minimal 10 karakter untuk kejelasan kurir.';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Tanggal Pengiriman
+                  AnimatedPress(
+                    child: InkWell(
+                      onTap: () => _selectDeliveryDate(context),
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 14,
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'Jumlah: ${widget.order.quantity} unit • Total: ${formatRupiah(widget.order.totalPrice)}',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.green.shade800,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey.shade400),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              const Text(
-                'Perbarui Informasi Pengantaran',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-
-              // Alamat Pengiriman
-              TextFormField(
-                controller: _addressController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: 'Alamat Lengkap Pengiriman *',
-                  hintText: 'Nama jalan, nomor rumah, RT/RW, kecamatan...',
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.only(bottom: 40),
-                    child: Icon(Icons.location_on_outlined),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey.shade50,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return 'Alamat pengiriman wajib diisi.';
-                  }
-                  if (val.trim().length < 10) {
-                    return 'Alamat minimal 10 karakter untuk kejelasan kurir.';
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 14),
-
-              // Tanggal Pengiriman
-              InkWell(
-                onTap: () => _selectDeliveryDate(context),
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 14,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade400),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_month_outlined,
-                        color: Colors.green.shade700,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Text(
-                              'Tanggal Pengiriman / Batch Panen *',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.grey.shade600,
-                                fontWeight: FontWeight.w600,
+                            Icon(
+                              Icons.calendar_month_outlined,
+                              color: Colors.green.shade700,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Tanggal Pengiriman / Batch Panen *',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey.shade600,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    formatDeliveryDate(_deliveryDate),
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 2),
-                            Text(
-                              formatDeliveryDate(_deliveryDate),
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            const Icon(Icons.arrow_drop_down),
                           ],
                         ),
                       ),
-                      const Icon(Icons.arrow_drop_down),
-                    ],
+                    ),
                   ),
-                ),
-              ),
 
-              const SizedBox(height: 14),
+                  const SizedBox(height: 14),
 
-              // Catatan Khusus
-              TextFormField(
-                controller: _notesController,
-                decoration: InputDecoration(
-                  labelText: 'Catatan Khusus (Opsional)',
-                  hintText: 'Instruksi potongan, pengemasan, dll',
-                  prefixIcon: const Icon(Icons.note_alt_outlined),
-                  filled: true,
-                  fillColor: Colors.grey.shade50,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Tombol Simpan Perubahan
-              Consumer<OrderProvider>(
-                builder: (context, provider, child) {
-                  final isLoading = provider.isLoadingOrders;
-
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green.shade700,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  // Catatan Khusus
+                  TextFormField(
+                    controller: _notesController,
+                    decoration: InputDecoration(
+                      labelText: 'Catatan Khusus (Opsional)',
+                      hintText: 'Instruksi potongan, pengemasan, dll',
+                      prefixIcon: const Icon(Icons.note_alt_outlined),
+                      filled: true,
+                      fillColor: Colors.grey.shade50,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      onPressed: isLoading ? null : _handleUpdate,
-                      icon: isLoading
-                          ? const SizedBox.shrink()
-                          : const Icon(Icons.save_outlined),
-                      label: isLoading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text(
-                              'Simpan Perubahan',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Tombol Simpan Perubahan
+                  Consumer<OrderProvider>(
+                    builder: (context, provider, child) {
+                      final isLoading = provider.isLoadingOrders;
+
+                      return SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: AnimatedPress(
+                          enabled: !isLoading,
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green.shade700,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                    ),
-                  );
-                },
+                            onPressed: isLoading ? null : _handleUpdate,
+                            icon: isLoading
+                                ? const SizedBox.shrink()
+                                : const Icon(Icons.save_outlined),
+                            label: isLoading
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Simpan Perubahan',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

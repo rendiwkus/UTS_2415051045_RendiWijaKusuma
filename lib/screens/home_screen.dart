@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/order_provider.dart';
+import '../widgets/animated_press.dart';
 import 'catalog_screen.dart';
 import 'order_history_screen.dart';
 
@@ -72,15 +73,19 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.receipt_long_rounded),
-            tooltip: 'Riwayat Pesanan Supabase',
-            onPressed: () => setState(() => _selectedIndex = 2),
+          AnimatedPress(
+            child: IconButton(
+              icon: const Icon(Icons.receipt_long_rounded),
+              tooltip: 'Riwayat Pesanan Supabase',
+              onPressed: () => setState(() => _selectedIndex = 2),
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.storefront_rounded),
-            tooltip: 'Buka Katalog',
-            onPressed: () => setState(() => _selectedIndex = 1),
+          AnimatedPress(
+            child: IconButton(
+              icon: const Icon(Icons.storefront_rounded),
+              tooltip: 'Buka Katalog',
+              onPressed: () => setState(() => _selectedIndex = 1),
+            ),
           ),
         ],
       ),
@@ -150,17 +155,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 14),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.green.shade800,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                      AnimatedPress(
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.green.shade800,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
+                          onPressed: () => setState(() => _selectedIndex = 1),
+                          icon: const Icon(Icons.shopping_bag_outlined),
+                          label: const Text('Belanja Sekarang'),
                         ),
-                        onPressed: () => setState(() => _selectedIndex = 1),
-                        icon: const Icon(Icons.shopping_bag_outlined),
-                        label: const Text('Belanja Sekarang'),
                       ),
                     ],
                   ),
@@ -244,9 +251,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ),
-                          TextButton(
-                            onPressed: () => setState(() => _selectedIndex = 2),
-                            child: const Text('Lihat'),
+                          AnimatedPress(
+                            child: TextButton(
+                              onPressed: () =>
+                                  setState(() => _selectedIndex = 2),
+                              child: const Text('Lihat'),
+                            ),
                           ),
                         ],
                       ),
@@ -272,12 +282,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          context.read<OrderProvider>().setCategory('All');
-                          setState(() => _selectedIndex = 1);
-                        },
-                        child: const Text('Lihat Semua'),
+                      AnimatedPress(
+                        child: TextButton(
+                          onPressed: () {
+                            context.read<OrderProvider>().setCategory('All');
+                            setState(() => _selectedIndex = 1);
+                          },
+                          child: const Text('Lihat Semua'),
+                        ),
                       ),
                     ],
                   ),
@@ -314,37 +326,39 @@ class _HomeScreenState extends State<HomeScreen> {
                           iconData = Icons.rice_bowl_outlined;
                       }
 
-                      return InkWell(
-                        onTap: () {
-                          context.read<OrderProvider>().setCategory(cat);
-                          setState(() => _selectedIndex = 1);
-                        },
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                iconData,
-                                color: Colors.green.shade700,
-                                size: 28,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  cat,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13,
+                      return AnimatedPress(
+                        child: InkWell(
+                          onTap: () {
+                            context.read<OrderProvider>().setCategory(cat);
+                            setState(() => _selectedIndex = 1);
+                          },
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  iconData,
+                                  color: Colors.green.shade700,
+                                  size: 28,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    cat,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       );

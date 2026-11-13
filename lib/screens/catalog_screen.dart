@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/product_model.dart';
 import '../providers/order_provider.dart';
+import '../widgets/animated_press.dart';
 import '../widgets/product_card.dart';
 import 'product_detail_screen.dart';
 
@@ -67,12 +68,14 @@ class _CatalogScreenState extends State<CatalogScreen> {
                     hintText: 'Cari daging, telur, atau sembako...',
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: provider.searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              provider.setSearchQuery('');
-                            },
+                        ? AnimatedPress(
+                            child: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                provider.setSearchQuery('');
+                              },
+                            ),
                           )
                         : null,
                     filled: true,
@@ -99,21 +102,23 @@ class _CatalogScreenState extends State<CatalogScreen> {
                   itemBuilder: (context, index) {
                     final cat = _categories[index];
                     final isSelected = provider.selectedCategory == cat;
-                    return FilterChip(
-                      label: Text(cat),
-                      selected: isSelected,
-                      selectedColor: Colors.green.shade600,
-                      labelStyle: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black87,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
+                    return AnimatedPress(
+                      child: FilterChip(
+                        label: Text(cat),
+                        selected: isSelected,
+                        selectedColor: Colors.green.shade600,
+                        labelStyle: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black87,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                        onSelected: (selected) {
+                          if (selected) {
+                            provider.setCategory(cat);
+                          }
+                        },
                       ),
-                      onSelected: (selected) {
-                        if (selected) {
-                          provider.setCategory(cat);
-                        }
-                      },
                     );
                   },
                 ),
@@ -150,14 +155,16 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 16),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green.shade700,
-                  foregroundColor: Colors.white,
+              AnimatedPress(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green.shade700,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () => provider.loadCatalog(),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Coba Lagi'),
                 ),
-                onPressed: () => provider.loadCatalog(),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Coba Lagi'),
               ),
             ],
           ),
@@ -186,13 +193,15 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
               ),
               const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  _searchController.clear();
-                  provider.setSearchQuery('');
-                  provider.setCategory('All');
-                },
-                child: const Text('Reset Filter'),
+              AnimatedPress(
+                child: TextButton(
+                  onPressed: () {
+                    _searchController.clear();
+                    provider.setSearchQuery('');
+                    provider.setCategory('All');
+                  },
+                  child: const Text('Reset Filter'),
+                ),
               ),
             ],
           ),

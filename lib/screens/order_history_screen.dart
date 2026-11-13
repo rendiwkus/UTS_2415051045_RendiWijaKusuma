@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/order_model.dart';
 import '../providers/order_provider.dart';
 import '../utils/formatters.dart';
+import '../widgets/animated_press.dart';
 import 'catalog_screen.dart';
 import 'edit_order_screen.dart';
 
@@ -60,17 +61,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           'Apakah Anda yakin ingin membatalkan pesanan untuk "${order.productName}"?\n\nTindakan ini akan menghapus data pesanan dari database Supabase.',
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx, false),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade700,
-              foregroundColor: Colors.white,
+          AnimatedPress(
+            child: TextButton(
+              onPressed: () => Navigator.pop(dialogCtx, false),
+              child: const Text('Batal'),
             ),
-            onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('Ya, Batalkan'),
+          ),
+          AnimatedPress(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red.shade700,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () => Navigator.pop(dialogCtx, true),
+              child: const Text('Ya, Batalkan'),
+            ),
           ),
         ],
       ),
@@ -141,12 +146,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Segarkan Riwayat',
-            onPressed: () {
-              context.read<OrderProvider>().fetchOrdersFromDatabase();
-            },
+          AnimatedPress(
+            child: IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: 'Segarkan Riwayat',
+              onPressed: () {
+                context.read<OrderProvider>().fetchOrdersFromDatabase();
+              },
+            ),
           ),
         ],
       ),
@@ -205,17 +212,19 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       ),
                     ),
                     const SizedBox(height: 18),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green.shade700,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    AnimatedPress(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade700,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
+                        onPressed: () => provider.fetchOrdersFromDatabase(),
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Coba Lagi'),
                       ),
-                      onPressed: () => provider.fetchOrdersFromDatabase(),
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Coba Lagi'),
                     ),
                   ],
                 ),
@@ -265,28 +274,30 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.shade700,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const CatalogScreen(),
+                      AnimatedPress(
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green.shade700,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          );
-                        },
-                        icon: const Icon(Icons.storefront_rounded),
-                        label: const Text('Buka Katalog Pangan'),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const CatalogScreen(),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.storefront_rounded),
+                          label: const Text('Buka Katalog Pangan'),
+                        ),
                       ),
                     ],
                   ),
@@ -516,55 +527,66 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                   Row(
                                     children: [
                                       // Tombol Edit
-                                      OutlinedButton.icon(
-                                        style: OutlinedButton.styleFrom(
-                                          foregroundColor: Colors.blue.shade700,
-                                          side: BorderSide(
-                                            color: Colors.blue.shade300,
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 6,
-                                          ),
-                                          visualDensity: VisualDensity.compact,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  EditOrderScreen(order: order),
+                                      AnimatedPress(
+                                        child: OutlinedButton.icon(
+                                          style: OutlinedButton.styleFrom(
+                                            foregroundColor:
+                                                Colors.blue.shade700,
+                                            side: BorderSide(
+                                              color: Colors.blue.shade300,
                                             ),
-                                          );
-                                        },
-                                        icon: const Icon(
-                                          Icons.edit_outlined,
-                                          size: 16,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 6,
+                                            ),
+                                            visualDensity:
+                                                VisualDensity.compact,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) => EditOrderScreen(
+                                                  order: order,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.edit_outlined,
+                                            size: 16,
+                                          ),
+                                          label: const Text('Ubah'),
                                         ),
-                                        label: const Text('Ubah'),
                                       ),
                                       const SizedBox(width: 8),
 
                                       // Tombol Batalkan / Hapus
-                                      OutlinedButton.icon(
-                                        style: OutlinedButton.styleFrom(
-                                          foregroundColor: Colors.red.shade700,
-                                          side: BorderSide(
-                                            color: Colors.red.shade300,
+                                      AnimatedPress(
+                                        child: OutlinedButton.icon(
+                                          style: OutlinedButton.styleFrom(
+                                            foregroundColor:
+                                                Colors.red.shade700,
+                                            side: BorderSide(
+                                              color: Colors.red.shade300,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 6,
+                                            ),
+                                            visualDensity:
+                                                VisualDensity.compact,
                                           ),
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 6,
+                                          onPressed: () => _confirmCancelOrder(
+                                            context,
+                                            order,
                                           ),
-                                          visualDensity: VisualDensity.compact,
+                                          icon: const Icon(
+                                            Icons.delete_outline,
+                                            size: 16,
+                                          ),
+                                          label: const Text('Batal'),
                                         ),
-                                        onPressed: () =>
-                                            _confirmCancelOrder(context, order),
-                                        icon: const Icon(
-                                          Icons.delete_outline,
-                                          size: 16,
-                                        ),
-                                        label: const Text('Batal'),
                                       ),
                                     ],
                                   ),

@@ -37,6 +37,8 @@ class ProductCard extends StatelessWidget {
               product.imageUrl,
               width: 90,
               height: 90,
+              cacheWidth: 180,
+              cacheHeight: 180,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
                 width: 90,
@@ -144,6 +146,8 @@ class ProductCard extends StatelessWidget {
                 product.imageUrl,
                 height: 130,
                 width: double.infinity,
+                cacheWidth: 520,
+                cacheHeight: 260,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   height: 130,
